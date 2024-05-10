@@ -1,19 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Vue Mastery</title>
-    <!-- Import Styles -->
-    <link rel="stylesheet" href="./assets/styles.css" />
-    <!-- Import Vue.js -->
-    <script src="https://unpkg.com/vue@3.0.0-beta.12/dist/vue.global.js"></script>
-  </head>
-  <body>
-    <div id="app">
-      <h1>Product goes here</h1>
-    </div>
 
-    <!-- Import Js -->
-    <script src="./main.js"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <title>Vue Mastery</title>
+  <!-- Import Styles -->
+  <link rel="stylesheet" href="./assets/styles.css" />
+  <!-- Import Vue.js -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <div class="nav-bar"></div>
+
+    <div class="cart">Cart({{cart}})</div>
+
+    <main class="product-display">
+
+      <div class="product-container">
+
+        <!-- to bind data to attributes: use v-bind -->
+        <!-- or a shorthand: just a colon -->
+
+        <div class="product-image">
+          <!-- <img v-bind:src="product.image" /> -->
+          <img :class="{ 'out-of-stock-img': !product.inStock }" :src="product.image" />
+        </div>
+
+        <div class="product-info">
+          <h1>{{ product.name }}</h1>
+
+          <div class="variant-list">
+            <div class="variant-item" v-for="variant in product.variants" :key="variant.id"
+              @click="updateProductImage(variant.image)">
+              <span class="variant-color" :style="{ backgroundColor: variant.hex }"></span>
+              <span>{{ variant.color }}</span>
+
+            </div>
+          </div>
+
+          <!-- conditional rendering: v-if directive -->
+          <!-- v-if adds and removes from the DOM -->
+          <!-- v-show: toggles visibility, good for modals -->
+          <div>
+            <p v-if="product.inventory >= 10">In stock</p>
+            <p v-else-if="product.inventory < 10 && product.inventory > 0">Almost sold out!</p>
+            <p v-else>Out of stock</p>
+          </div>
+
+          <div v-if="product.isOnSale">
+            <p>Currently on sale!</p>
+          </div>
+
+          <!-- rendering lists: v-for directive -->
+          <div>
+            <ul v-if="product.composition || product.composition.length !== 0">
+              <li v-for="item in product.composition">{{ item }}</li>
+            </ul>
+          </div>
+
+          <!-- adding events -->
+          <!-- v-on:[eventName]-->
+          <!-- @[eventName]-->
+          <button class="button" :class="{ disabledButton: !product.inStock }" v-on:click="addToCart"
+            :disabled="!product.inStock">
+            Add to Cart
+          </button>
+
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Import App -->
+  <script src="./main.js"></script>
+
+  <!-- Mount App -->
+  <script>
+    const mountedApp = app.mount('#app')
+  </script>
+</body>
+
 </html>
